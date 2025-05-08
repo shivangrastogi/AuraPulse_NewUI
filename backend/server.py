@@ -7,7 +7,7 @@ import base64
 import os  
 
 app = Flask(__name__)
-CORS(app)  # Enables CORS for frontend requests
+CORS(app ,origins=["https://frontend-aurapulse.onrender.com"])
 
 # Load the model architecture and weights
 json_file = open("emotiondetector.json", "r")
