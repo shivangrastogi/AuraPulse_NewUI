@@ -4,75 +4,49 @@ import cv2
 from keras.models import model_from_json
 import numpy as np
 import base64
-import os
+import os  
 
 app = Flask(__name__)
-
-# Allow only your frontend origin
-CORS(app)
+CORS(app)  # Enables CORS for frontend requests
 
 # Load the model architecture and weights
-try:
-    with open("emotiondetector.json", "r") as json_file:
-        model = model_from_json(json_file.read())
-    model.load_weights("emotiondetector.h5")
-except Exception as e:
-    print(f"Error loading model: {e}")
-    model = None
+json_file = open("emotiondetector.json", "r")
+model_json = json_file.read()
+json_file.close()
+model = model_from_json(model_json)
+model.load_weights("emotiondetector.h5")
+
 
 # Load Haar Cascade for face detection
 haar_file = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(haar_file)
 
 # Emotion labels
-labels = {
-    0: 'angry', 1: 'disgust', 2: 'fear',
-    3: 'happy', 4: 'neutral', 5: 'sad', 6: 'surprise'
-}
+labels = {0: 'angry', 1: 'disgust', 2: 'fear', 3: 'happy', 4: 'neutral', 5: 'sad', 6: 'surprise'}
+
+
+
+
+
+
 
 def extract_features(image):
     feature = np.array(image)
     feature = feature.reshape(1, 48, 48, 1)
     return feature / 255.0
 
+
 @app.route('/api/recognize', methods=['POST'])
 def recognize_emotion():
-    if model is None:
-        return jsonify({"error": "Model not loaded"}), 500
-    try:
-        data = request.get_json()
-        if not data or 'image' not in data:
-            return jsonify({"error": "No image provided"}), 400
-
-        image_data = base64.b64decode(data['image'])
-        nparr = np.frombuffer(image_data, np.uint8)
-        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
-        predictions = []
-        for (x, y, w, h) in faces:
-            face_image = gray[y:y+h, x:x+w]
-            face_image = cv2.resize(face_image, (48, 48))
-            img = extract_features(face_image)
-            pred = model.predict(img)
-            predictions.append(labels[pred.argmax()])
-
-        if predictions:
-            return jsonify({"mood": predictions[0], "songs": []})
-        else:
-            return jsonify({"mood": "No face detected", "songs": []})
-    except Exception as e:
-        print(f"Error during recognition: {e}")
-        return jsonify({"error": "Failed to process image"}), 500
+    print("Image received, returning hardcoded mood.")
+    return jsonify({"mood": "happy", "songs": []})
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify({"message": "Backend is working!"})
 
 if __name__ == '__main__':
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000)
 
 
 
