@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { OAuthProvider } from "firebase/auth";
 import { auth, googleProvider } from "../firebase-config.js";
 
-function SignIn() {
+function SignIn({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -36,25 +36,6 @@ function SignIn() {
     return isValid;
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setLoading(true);
-    setError("");
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast.success("Logged in successfully!");
-    } catch (err) {
-      setError("Incorrect email or password. Please try again.");
-      toast.error("Login failed! Incorrect email or password.");
-      console.error("Login Error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSignIn = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -65,6 +46,7 @@ function SignIn() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Logged in successfully!");
+      onLoginSuccess();
     } catch (err) {
       setError("Incorrect email or password. Please try again.");
       toast.error("Login failed! Incorrect email or password.");
@@ -81,6 +63,7 @@ function SignIn() {
     try {
       const result = await signInWithPopup(auth, provider);
       alert("Logged in successfully!");
+      onLoginSuccess();
     } catch (err) {
       let message = "Authentication failed. Try again.";
 
@@ -161,7 +144,7 @@ function SignIn() {
       </div>
       {error && <p className="error-message">{error}</p>}
 
-      <button className="btn solid" onClick={handleLogin} disabled={loading} >
+      <button className="btn solid" onClick={handleSignIn} disabled={loading} >
         {loading ? <div className="spinner"></div> : "Login"}
       </button>
       <p className="social-text">Or sign in with your mood on:</p>

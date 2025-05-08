@@ -11,7 +11,7 @@ import { auth } from "../firebase-config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function SignUp() {
+function SignUp({ onLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,6 +49,7 @@ function SignUp() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       toast.success("Welcome to AuraPulse!");
+      onLoginSuccess();
     } catch (err) {
       setError("Sign up failed. Please try again.");
       toast.error(err.message);
@@ -65,7 +66,8 @@ function SignUp() {
 
     try {
       const result = await signInWithPopup(auth, provider);
-      toast.success(`Logged in as ${result.user.email}`);
+      alert(`Logged in as ${result.user.email}`);
+      onLoginSuccess();
     } catch (err) {
       let message = "Authentication failed. Try again.";
 
