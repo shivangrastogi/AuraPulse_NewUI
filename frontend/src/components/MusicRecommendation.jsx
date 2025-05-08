@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase-config";
+import BACKEND_URL from "../config";
 
 function MusicRecommendation({ handleLogout }) {
   const webcamRef = useRef(null);
@@ -343,7 +344,7 @@ function MusicRecommendation({ handleLogout }) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/api/recognize",
+        `${BACKEND_URL}/api/recognize`,
         { image: base64Image },
         { headers: { "Content-Type": "application/json" } }
       );
