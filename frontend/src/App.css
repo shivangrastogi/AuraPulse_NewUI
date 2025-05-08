@@ -432,3 +432,220 @@ form.sign-in-form {
 .logout-btn:hover {
   background-color: #c62828;
 }
+
+
+
+/* MusicRecommendation */
+
+.container-Music {
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  color: #333;
+}
+.title {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  background-color: #e60000;
+}
+
+/* Content Section */
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.left-section,
+.right-section {
+  width: 100%;
+  max-width: 45%;
+  height: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: #444;
+}
+
+/* Webcam Section */
+.webcam-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.webcam {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+/* Detect Button */
+.detect-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.detect-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Mood Text */
+.mood-text {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+}
+
+/* Playlist Styling */
+.right-section .playlist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px; /* Fixed height for the playlist */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.right-section .playlist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.right-section .playlist-item:last-child {
+  margin-bottom: 0; /* Remove gap for the last item */
+}
+
+.audio-player {
+  margin-left: 10px;
+  width: 100%;
+}
+
+.no-songs {
+  color: #888;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Flip Webcam */
+.flip-horizontal {
+  transform: scaleX(-1);
+}
+
+/* Options Buttons */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%; /* Occupy full height of the right section */
+}
+
+.option-btn {
+  flex: 1; /* Makes both buttons take equal height */
+  width: 100%; /* Full width of the right section */
+  margin: 5px 0; /* Adds a small gap between buttons */
+  background-color: #6f878bfc; /* Primary button color */
+  color: white; /* Text color */
+  font-size: 1.2rem; /* Button text size */
+  font-weight: bold; /* Make the text bold */
+  border: none; /* Removes border */
+  border-radius: 8px; /* Adds rounded corners */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+  transition: background-color 0.3s ease; /* Smooth color transition on hover */
+}
+
+.option-btn:hover {
+  background-color: #388e3c; /* Darker shade for hover effect */
+}
+
+/* Go Back Button */
+.go-back-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #f0ad4e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.go-back-btn:hover {
+  background-color: #ec971f;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column; /* Stacks sections vertically on small screens */
+  }
+
+  .left-section,
+  .right-section {
+    width: 100%; /* Full width for small screens */
+  }
+
+  .right-section .playlist {
+    max-height: 200px; /* Adjust playlist height for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .logout-btn {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+
+  .detect-btn {
+    font-size: 0.9rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .right-section .playlist {
+    max-height: 150px; /* Further reduce height for mobile screens */
+  }
+}
+
