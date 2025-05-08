@@ -171,8 +171,9 @@ function SignIn() {
           className="social-icon"
           aria-label="Google"
           onClick={() => handleOAuthLogin(googleProvider)}
+          
         >
-          <i className="fab fa-google"></i>
+          <i className="fab fa-google" ></i>
         </button>
       </div>
     </form>
