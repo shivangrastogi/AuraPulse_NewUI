@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 
 # Allow only your frontend origin
-CORS(app, origins=["https://frontend-aurapulse.onrender.com"])
+CORS(app)
 
 # Load the model architecture and weights
 try:
