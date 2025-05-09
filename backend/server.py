@@ -4,18 +4,21 @@ import cv2
 from keras.models import model_from_json
 import numpy as np
 import base64
-import os  
+import os  # For file operations
 
 app = Flask(__name__)
-CORS(app)  # Enables CORS for frontend requests
+CORS(app)  # Allows requests from React
+
+basedir = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(basedir, "emotiondetector.json")
+weights_path = os.path.join(basedir, "emotiondetector.h5")
 
 # Load the model architecture and weights
-json_file = open("emotiondetector.json", "r")
+json_file = open(json_path, "r")
 model_json = json_file.read()
 json_file.close()
 model = model_from_json(model_json)
-model.load_weights("emotiondetector.h5")
-
+model.load_weights(weights_path)
 
 # Load Haar Cascade for face detection
 haar_file = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
@@ -24,12 +27,18 @@ face_cascade = cv2.CascadeClassifier(haar_file)
 # Emotion labels
 labels = {0: 'angry', 1: 'disgust', 2: 'fear', 3: 'happy', 4: 'neutral', 5: 'sad', 6: 'surprise'}
 
+# Songs folder paths
+song_paths = {
+    "happy": os.path.join(basedir, "../frontend/src/songs/angry"),
+    # "disgust": os.path.join(basedir, "../Aurapulse-p1/songs/disgust"),
+    # "fear": os.path.join(basedir, "../Aurapulse-p1/songs/fear"),
+    # "happy": os.path.join(basedir, "../Aurapulse-p1/songs/happy"),
+    # "neutral": os.path.join(basedir, "../Aurapulse-p1/songs/neutral"),
+    # "sad": os.path.join(basedir, "../Aurapulse-p1/songs/sad"),
+    # "surprise": os.path.join(basedir, "../Aurapulse-p1/songs/surprise"),
+}
 
-
-
-
-
-
+# Function to preprocess input image
 def extract_features(image):
     feature = np.array(image)
     feature = feature.reshape(1, 48, 48, 1)
@@ -38,16 +47,67 @@ def extract_features(image):
 
 @app.route('/api/recognize', methods=['POST'])
 def recognize_emotion():
-    print("Image received, returning hardcoded mood.")
-    return jsonify({"mood": "happy", "songs": []})
+    try:
+        # Read image from request
+        data = request.json
+        image_data = base64.b64decode(data['image'])
 
-@app.route('/api/data', methods=['GET'])
-def get_data():
-    return jsonify({"message": "Backend is working!"})
+        # Convert image to OpenCV format
+        nparr = np.frombuffer(image_data, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        # Convert to grayscale for prediction
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+        predictions = []
+        for (x, y, w, h) in faces:
+            face_image = gray[y:y+h, x:x+w]
+            face_image = cv2.resize(face_image, (48, 48))
+            img = extract_features(face_image)
+            pred = model.predict(img)
+            prediction_label = labels[pred.argmax()]
+            predictions.append(prediction_label)
+
+        if predictions:
+            mood = predictions[0]
+            # Get the list of songs for the detected mood
+            song_list = get_songs_for_mood(mood)
+            return jsonify({"mood": mood, "songs": song_list})
+        else:
+            return jsonify({"mood": "No face detected", "songs": []})
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Failed to process image"})
+
+@app.route('/api/songs/<mood>', methods=['GET'])
+def get_songs_by_mood(mood):
+    # Return the list of songs for a given mood
+    song_list = get_songs_for_mood(mood)
+    return jsonify({"mood": mood, "songs": song_list})
+
+def get_songs_for_mood(mood):
+    """
+    Fetches the list of songs for a specific mood from the corresponding directory.
+    """
+    song_list = []
+    try:
+        # Get the folder path for the mood
+        folder_path = song_paths.get(mood, "")
+        if folder_path and os.path.exists(folder_path):
+            # List all files in the directory
+            for file in os.listdir(folder_path):
+                if file.endswith((".mp3", ".wav")):  # Filter only audio files
+                    song_list.append({"name": file, "path": os.path.join(folder_path, file)})
+        else:
+            print(f"No directory found for mood: {mood}")
+    except Exception as e:
+        print(f"Error fetching songs for mood {mood}: {e}")
+    return song_list
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-
 
 
 # from flask import Flask, jsonify, request
