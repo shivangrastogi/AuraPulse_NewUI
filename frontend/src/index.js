@@ -4,13 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import MusicRecommendation from './components/MusicRecommendation';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    < MusicRecommendation/>
+    < App/>
   </React.StrictMode>
 );
 
